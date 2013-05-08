@@ -27,4 +27,4 @@ test:
 	$(JAVA) parser.MiniSql
 
 clean:
-	rm -f *.class *~ \#* MiniSql.jj JJTMiniSqlState.java MiniSql.java MiniSqlConstants.java MiniSqlTokenManager.java MiniSqlTreeConstants.java Node.java ParseException.java SimpleCharStream.java SimpleNode.java Token.java TokenMgrError.java
+	rm -f *.class *~ \#* MiniSql.jjt JJTMiniSqlState.java MiniSql.java MiniSqlConstants.java MiniSqlTokenManager.java MiniSqlTreeConstants.java Node.java ParseException.java SimpleCharStream.java SimpleNode.java Token.java TokenMgrError.java

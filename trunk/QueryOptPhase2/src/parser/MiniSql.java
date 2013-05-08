@@ -149,6 +149,7 @@ public class MiniSql/*@bgen(jjtree)*/implements MiniSqlTreeConstants, MiniSqlCon
 
   final public void CreateTableStmt() throws ParseException {
                                         /*@bgen(jjtree) _CreateTable */
+	
   AST_CreateTable jjtn000 = new AST_CreateTable(JJT_CREATETABLE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -207,6 +208,7 @@ public class MiniSql/*@bgen(jjtree)*/implements MiniSqlTreeConstants, MiniSqlCon
 
   final public void DropTableStmt() throws ParseException {
                                     /*@bgen(jjtree) _DropTable */
+	  
   AST_DropTable jjtn000 = new AST_DropTable(JJT_DROPTABLE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -1035,8 +1037,10 @@ public class MiniSql/*@bgen(jjtree)*/implements MiniSqlTreeConstants, MiniSqlCon
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
+    
     for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    
   }
 
   public void ReInit(java.io.InputStream stream) {
