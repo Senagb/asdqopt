@@ -28,7 +28,7 @@ class DropIndex implements Plan {
    */
   public void execute() {
 	  // drop the index on the table
-	   
+	  new HashIndex(fileName).deleteFile();
 	      Minibase.SystemCatalog.dropIndex(fileName);
 
 	

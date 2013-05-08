@@ -1,5 +1,6 @@
 package query;
 
+import index.HashIndex;
 import global.Minibase;
 import parser.AST_CreateIndex;
 import relop.Schema;
@@ -37,7 +38,9 @@ class CreateIndex implements Plan {
    */
   public void execute() {
 	 
-	  //TODO i supposed that the file is already exicts so no need to make hash file
+	  //TODO i supposed that the hash file is not exists 
+	  new HashIndex(fileName);
+	  
 	  Minibase.SystemCatalog.createIndex(fileName,TableIndex, ColumnIndex);
     // print the output message
     System.out.println("(Not implemented)");
