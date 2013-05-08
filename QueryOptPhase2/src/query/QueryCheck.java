@@ -36,9 +36,10 @@ class QueryCheck {
   public static Schema tableExists(String tableName) throws QueryException {
 
     // check for the catalog entry
-    if (Minibase.SystemCatalog.getFileRID(tableName, true) == null) {
+    if (Minibase.SystemCatalog.getFileRID(tableName, true) == null) { 
       throw new QueryException("table '" + tableName + "' doesn't exist");
     }
+   
     return Minibase.SystemCatalog.getSchema(tableName);
 
   } // public static Schema tableExists(String tableName) throws QueryException
