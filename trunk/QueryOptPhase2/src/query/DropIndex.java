@@ -20,6 +20,7 @@ class DropIndex implements Plan {
   public DropIndex(AST_DropIndex tree) throws QueryException {
 	  fileName = tree.getFileName();
 	  QueryCheck.indexExists(fileName);
+	  
 //	    QueryCheck.tableExists(fileName);
   } // public DropIndex(AST_DropIndex tree) throws QueryException
 
@@ -28,7 +29,7 @@ class DropIndex implements Plan {
    */
   public void execute() {
 	  // drop the index on the table
-	  new HashIndex(fileName).deleteFile();
+	//  new HashIndex(fileName).deleteFile();
 	      Minibase.SystemCatalog.dropIndex(fileName);
 
 	
