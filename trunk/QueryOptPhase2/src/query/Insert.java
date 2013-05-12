@@ -1,6 +1,9 @@
 package query;
 
+import index.HashIndex;
 import global.Minibase;
+import global.RID;
+import global.SearchKey;
 import heap.HeapFile;
 import parser.AST_Insert;
 import relop.Schema;
@@ -13,7 +16,7 @@ class Insert implements Plan {
 
 	protected String fileName;
 	protected Object[] values;
-
+	protected Schema schema;
 	/**
 	 * Optimizes the plan, given the parsed query.
 	 * 
@@ -25,7 +28,21 @@ class Insert implements Plan {
 		fileName = tree.getFileName();
 
 		values = tree.getValues();
+		
 		 QueryCheck.tableExists(fileName);
+		 
+		 
+		 
+		 
+         schema = QueryCheck.tableExists(fileName);
+         
+         QueryCheck.insertValues(schema, values);
+         
+         // We need to update index it they exists, so check their validity here
+         IndexDesc[] ixDescs = Minibase.SystemCatalog.getIndexes(fileName);
+         for(IndexDesc ixDesc : ixDescs) {
+                 QueryCheck.indexExists(ixDesc.indexName);
+         }
 	} // public Insert(AST_Insert tree) throws QueryException
 
 	/**
@@ -33,14 +50,23 @@ class Insert implements Plan {
 	 */
 	public void execute() {
 		//TODO 
-		Schema s=Minibase.SystemCatalog.getSchema(fileName);
+//		Schema s=Minibase.SystemCatalog.getSchema(fileName);
+//		Tuple tuple=new Tuple(s);
+//		
+//		tuple.setAllFields(values);
+//		HeapFile file=new HeapFile(fileName);
+//		file.insertRecord(tuple.getData());
 
-		Tuple tuple=new Tuple(s);
-		
-		tuple.setAllFields(values);
-		HeapFile file=new HeapFile(fileName);
-		file.insertRecord(tuple.getData());
-		
+		HeapFile hf = new HeapFile(fileName);
+        Tuple tuple = new Tuple(schema, values);
+        RID rid = tuple.insertIntoFile(hf);
+        
+        // If there is index for the table, also update the index
+        IndexDesc[] ixDescs = Minibase.SystemCatalog.getIndexes(fileName);
+        for(IndexDesc ixDesc : ixDescs) {
+                HashIndex indexFile = new HashIndex(ixDesc.indexName);
+                indexFile.insertEntry(new SearchKey(tuple.getField(ixDesc.columnName)), rid);
+        }
 		
 		//TODO if it have index
 		// print the output message
