@@ -63,10 +63,10 @@ public class Selection extends Iterator {
 		// throw new UnsupportedOperationException("Not implemented");
 		while (iter.hasNext()) {
 			Tuple temp = iter.getNext();
-			boolean pass = true;
+			boolean pass = false;
 			for (int i = 0; i < given.length; i++) {
-				if (!given[i].evaluate(temp)) {
-					pass = false;
+				if (given[i].evaluate(temp)) {
+					pass = true;
 					break;
 				}
 			}

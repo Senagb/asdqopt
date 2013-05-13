@@ -33,7 +33,8 @@ class Select implements Plan {
 		Predicate[][] predicates = tree.getPredicates();
 		Iterator iter = null;
 		Integer[] colids = null;
-
+for(int i=0;i<predicates.length;i++)
+	System.out.println(Arrays.toString(predicates[i]));
 		if (tables == null)
 			throw new QueryException("Tables array invalid in SELECT");
 
@@ -83,17 +84,20 @@ class Select implements Plan {
 				iter = tmp;
 			}
 		}
-iter.execute();
+//iter.execute();
 		// Selection
-		System.out.println(Arrays.toString(predicates[1]));
-		//for (int pindex = 0; pindex < predicates.length; pindex++) {
-			Iterator tmpsel = new Selection(iter, predicates[0]);
+		int count=0;
+		for (int pindex = 0; pindex < predicates.length; pindex++) {
+			System.out.println(Arrays.toString(predicates[pindex]));
+			Iterator tmpsel = new Selection(iter, predicates[pindex]);
+			count++;
+//			if(count==4)
+//				tmpsel.execute();
 			iter = tmpsel;
-			
-		//}
+		}
 		System.out.println();
 //		if(iter!=null)
-//			iter.execute();
+		//	iter.execute();
 		System.out.println(".............................");
 		// Projection
 		if (columns.length > 0) {
@@ -117,7 +121,7 @@ iter.execute();
                         System.out.println("SELECT Query Explained.");
                 }
                 else {
-                       // retval = selectIter.execute();
+                       retval = selectIter.execute();
                         System.out.println(retval + "row(s) selected.");
                 }
         }
