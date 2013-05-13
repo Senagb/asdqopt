@@ -34,7 +34,10 @@ public class IndexScan extends Iterator {
 	 * child iterators, and increases the indent depth along the way.
 	 */
 	public void explain(int depth) {
-		throw new UnsupportedOperationException("Not implemented");
+		// throw new UnsupportedOperationException("Not implemented");
+		indent(depth);
+		System.out.println("IndexScan : " + " on index: " + myIndex.toString()
+				+ " and file: " + currentFile.toString());
 	}
 
 	/**
@@ -42,8 +45,12 @@ public class IndexScan extends Iterator {
 	 */
 	public void restart() {
 		// throw new UnsupportedOperationException("Not implemented");
-		scanner.close();
+		if (isOpen) {
+			scanner.close();
+			isOpen = false;
+		}
 		scanner = myIndex.openScan();
+		isOpen = true;
 	}
 
 	/**
@@ -61,6 +68,9 @@ public class IndexScan extends Iterator {
 		// throw new UnsupportedOperationException("Not implemented");
 		isOpen = false;
 		scanner.close();
+		fileSchema = null;
+		currentFile = null;
+		myIndex = null;
 	}
 
 	/**
@@ -68,7 +78,9 @@ public class IndexScan extends Iterator {
 	 */
 	public boolean hasNext() {
 		// throw new UnsupportedOperationException("Not implemented");
-		return scanner.hasNext();
+		if (isOpen)
+			return scanner.hasNext();
+		return false;
 	}
 
 	/**
@@ -79,6 +91,8 @@ public class IndexScan extends Iterator {
 	 */
 	public Tuple getNext() throws IllegalStateException {
 		// throw new UnsupportedOperationException("Not implemented");
+		if (!isOpen)
+			throw new IllegalStateException("Scanner is closed");
 		RID rid = new RID();
 		rid = scanner.getNext();
 		byte[] returened = currentFile.selectRecord(rid);

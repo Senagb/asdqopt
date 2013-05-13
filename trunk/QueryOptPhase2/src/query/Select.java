@@ -1,9 +1,6 @@
 package query;
 
 import heap.HeapFile;
-
-import java.util.Arrays;
-
 import parser.AST_Select;
 import relop.FileScan;
 import relop.Iterator;
@@ -24,17 +21,18 @@ class Select implements Plan {
 	 * @throws QueryException
 	 *             if validation fails
 	 */
-	 
-    private Iterator selectIter = null;
-    private boolean isExplain = false;
+
+	private Iterator selectIter = null;
+	private boolean isExplain = true;
+
 	public Select(AST_Select tree) throws QueryException {
 		String[] tables = tree.getTables();
 		String[] columns = tree.getColumns();
 		Predicate[][] predicates = tree.getPredicates();
 		Iterator iter = null;
 		Integer[] colids = null;
-for(int i=0;i<predicates.length;i++)
-	System.out.println(Arrays.toString(predicates[i]));
+		// for (int i = 0; i < predicates.length; i++)
+		// System.out.println(Arrays.toString(predicates[i]));
 		if (tables == null)
 			throw new QueryException("Tables array invalid in SELECT");
 
@@ -84,21 +82,21 @@ for(int i=0;i<predicates.length;i++)
 				iter = tmp;
 			}
 		}
-//iter.execute();
+		// iter.execute();
 		// Selection
-		int count=0;
+		int count = 0;
 		for (int pindex = 0; pindex < predicates.length; pindex++) {
-			System.out.println(Arrays.toString(predicates[pindex]));
+			// System.out.println(Arrays.toString(predicates[pindex]));
 			Iterator tmpsel = new Selection(iter, predicates[pindex]);
 			count++;
-//			if(count==4)
-//				tmpsel.execute();
+			// if(count==4)
+			// tmpsel.execute();
 			iter = tmpsel;
 		}
-		System.out.println();
-//		if(iter!=null)
-		//	iter.execute();
-		System.out.println(".............................");
+		// System.out.println();
+		// // if(iter!=null)
+		// // iter.execute();
+		// System.out.println(".............................");
 		// Projection
 		if (columns.length > 0) {
 			Iterator tmpproj = new Projection(iter, colids);
@@ -114,17 +112,16 @@ for(int i=0;i<predicates.length;i++)
 	 */
 	public void execute() {
 		int retval = 0;
-        
-        if(selectIter != null) {
-                if(isExplain) {
-                        selectIter.explain(0);
-                        System.out.println("SELECT Query Explained.");
-                }
-                else {
-                       retval = selectIter.execute();
-                        System.out.println(retval + "row(s) selected.");
-                }
-        }
+
+		if (selectIter != null) {
+			if (isExplain) {
+				selectIter.explain(0);
+				System.out.println("SELECT Query Explained.");
+			} else {
+				retval = selectIter.execute();
+				System.out.println(retval + "row(s) selected.");
+			}
+		}
 		// print the output message
 		System.out.println("0 rows affected. (Not implemented)");
 
