@@ -32,8 +32,7 @@ public class FileScan extends Iterator {
 	 * child iterators, and increases the indent depth along the way.
 	 */
 	public void explain(int depth) {
-		indent(depth);
-		System.out.println("FileScan of file: " + currentFile.toString());
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	/**
@@ -41,12 +40,8 @@ public class FileScan extends Iterator {
 	 */
 	public void restart() {
 		// throw new UnsupportedOperationException("Not implemented");
-		if (isOpen) {
-			scanner.close();
-			isOpen = false;
-		}
+		scanner.close();
 		scanner = currentFile.openScan();
-		isOpen = true;
 	}
 
 	/**
@@ -64,9 +59,6 @@ public class FileScan extends Iterator {
 		// throw new UnsupportedOperationException("Not implemented");
 		isOpen = false;
 		scanner.close();
-		fileSchema = null;
-		currentFile = null;
-		lastRID = null;
 	}
 
 	/**
@@ -74,9 +66,7 @@ public class FileScan extends Iterator {
 	 */
 	public boolean hasNext() {
 		// throw new UnsupportedOperationException("Not implemented");
-		if (isOpen)
-			return scanner.hasNext();
-		return false;
+		return scanner.hasNext();
 	}
 
 	/**
@@ -87,9 +77,6 @@ public class FileScan extends Iterator {
 	 */
 	public Tuple getNext() {
 		// throw new UnsupportedOperationException("Not implemented");
-		if (!isOpen)
-			throw new IllegalStateException("File scan closed");
-
 		RID rid = new RID();
 		byte[] returened = scanner.getNext(rid);
 		lastRID = rid;
