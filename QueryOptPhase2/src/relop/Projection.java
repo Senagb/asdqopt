@@ -16,9 +16,7 @@ public class Projection extends Iterator {
 		// throw new UnsupportedOperationException("Not implemented");
 		new_schema = new Schema(fields.length);
 		for (int i = 0; i < fields.length; i++) {
-			new_schema.initField(i, iter.getSchema().fieldType(fields[i]), iter
-					.getSchema().fieldLength(fields[i]), iter.getSchema()
-					.fieldName(fields[i]));
+			new_schema.initField(i, iter.getSchema(), fields[i]);
 		}
 
 		setSchema(new_schema);
@@ -31,7 +29,17 @@ public class Projection extends Iterator {
 	 * child iterators, and increases the indent depth along the way.
 	 */
 	public void explain(int depth) {
-		throw new UnsupportedOperationException("Not implemented");
+		// throw new UnsupportedOperationException("Not implemented");
+		indent(depth);
+		String str = "Projection on fields: ";
+		for (int i = 0; i < given.length; i++) {
+			if (i == 0)
+				str += new_schema.fieldName(i) + "(" + given[i] + ")";
+			else
+				str += "  " + new_schema.fieldName(i) + "(" + given[i] + ")";
+		}
+		System.out.println(str);
+		iter.explain(depth + 1);
 	}
 
 	/**
@@ -63,6 +71,8 @@ public class Projection extends Iterator {
 	 */
 	public boolean hasNext() {
 		// throw new UnsupportedOperationException("Not implemented");
+		if (!isOpen())
+			return false;
 		return iter.hasNext();
 	}
 

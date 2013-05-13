@@ -28,7 +28,17 @@ public class Selection extends Iterator {
 	 * child iterators, and increases the indent depth along the way.
 	 */
 	public void explain(int depth) {
-		throw new UnsupportedOperationException("Not implemented");
+		// throw new UnsupportedOperationException("Not implemented");
+		indent(depth);
+		String str = "Selection with predicates: ";
+		for (int i = 0; i < given.length; i++) {
+			if (i == 0)
+				str += given[i].toString();
+			else
+				str += " OR " + given[i].toString();
+		}
+		System.out.println(str);
+		iter.explain(depth + 1);
 	}
 
 	/**
@@ -61,6 +71,8 @@ public class Selection extends Iterator {
 	 */
 	public boolean hasNext() {
 		// throw new UnsupportedOperationException("Not implemented");
+		if (!isOpen())
+			return false;
 		while (iter.hasNext()) {
 			Tuple temp = iter.getNext();
 			boolean pass = false;
