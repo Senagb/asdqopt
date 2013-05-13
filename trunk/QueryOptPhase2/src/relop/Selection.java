@@ -20,7 +20,6 @@ public class Selection extends Iterator {
 		given = preds;
 		this.iter = iter;
 		currentSchema = iter.getSchema();
-
 	}
 
 	/**
@@ -28,17 +27,7 @@ public class Selection extends Iterator {
 	 * child iterators, and increases the indent depth along the way.
 	 */
 	public void explain(int depth) {
-		// throw new UnsupportedOperationException("Not implemented");
-		indent(depth);
-		String str = "Selection with predicates: ";
-		for (int i = 0; i < given.length; i++) {
-			if (i == 0)
-				str += given[i].toString();
-			else
-				str += " OR " + given[i].toString();
-		}
-		System.out.println(str);
-		iter.explain(depth + 1);
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	/**
@@ -66,28 +55,23 @@ public class Selection extends Iterator {
 		iter.close();
 	}
 
+	private Tuple popTillPass() {
+		while (iter.hasNext()) {
+			Tuple temp = iter.getNext();
+			for (int i = 0; i < given.length; i++)
+				if (given[i].evaluate(temp))
+					return temp;
+		}
+		return null;
+	}
+
 	/**
 	 * Returns true if there are more tuples, false otherwise.
 	 */
 	public boolean hasNext() {
-		// throw new UnsupportedOperationException("Not implemented");
-		if (!isOpen())
-			return false;
-		while (iter.hasNext()) {
-			Tuple temp = iter.getNext();
-			boolean pass = false;
-			for (int i = 0; i < given.length; i++) {
-				if (given[i].evaluate(temp)) {
-					pass = true;
-					break;
-				}
-			}
-			if (pass) {
-				nextTuple = temp;
-				return true;
-			}
-		}
-		return false;
+		if (nextTuple == null)
+			nextTuple = popTillPass();
+		return nextTuple != null;
 	}
 
 	/**
@@ -97,8 +81,8 @@ public class Selection extends Iterator {
 	 *             if no more tuples
 	 */
 	public Tuple getNext() {
-		// throw new UnsupportedOperationException("Not implemented");
-
-		return nextTuple;
+		Tuple ret = nextTuple;
+		nextTuple = popTillPass();
+		return ret;
 	}
 } // public class Selection extends Iterator
