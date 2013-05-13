@@ -36,11 +36,7 @@ public class KeyScan extends Iterator {
 	 * child iterators, and increases the indent depth along the way.
 	 */
 	public void explain(int depth) {
-		// throw new UnsupportedOperationException("Not implemented");
-		indent(depth);
-		System.out.println("KeyScan of key: " + myKey.toString()
-				+ " on index: " + myIndex.toString() + " and file: "
-				+ currentFile.toString());
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	/**
@@ -48,12 +44,9 @@ public class KeyScan extends Iterator {
 	 */
 	public void restart() {
 		// throw new UnsupportedOperationException("Not implemented");
-		if (!isOpen) {
-			scanner.close();
-			isOpen = false;
-		}
+		scanner.close();
 		scanner = myIndex.openScan(myKey);
-		isOpen = true;
+
 	}
 
 	/**
@@ -71,10 +64,6 @@ public class KeyScan extends Iterator {
 		// throw new UnsupportedOperationException("Not implemented");
 		isOpen = false;
 		scanner.close();
-		fileSchema = null;
-		currentFile = null;
-		myIndex = null;
-		myKey = null;
 	}
 
 	/**
@@ -82,9 +71,7 @@ public class KeyScan extends Iterator {
 	 */
 	public boolean hasNext() {
 		// throw new UnsupportedOperationException("Not implemented");
-		if (isOpen)
-			return scanner.hasNext();
-		return false;
+		return scanner.hasNext();
 	}
 
 	/**
@@ -95,8 +82,6 @@ public class KeyScan extends Iterator {
 	 */
 	public Tuple getNext() throws IllegalStateException {
 		// throw new UnsupportedOperationException("Not implemented");
-		if (!isOpen)
-			throw new IllegalStateException("getNext() Error: scan closed");
 		RID rid = new RID();
 		rid = scanner.getNext();
 		byte[] returened = currentFile.selectRecord(rid);
