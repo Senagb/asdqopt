@@ -62,7 +62,7 @@ public class SimpleJoin extends Iterator {
 	 */
 	public boolean hasNext() {
 		// throw new UnsupportedOperationException("Not implemented");
-		return iterLeft.hasNext();
+		return iterLeft.hasNext()||iterRight.hasNext();
 	}
 
 	/**
@@ -71,26 +71,34 @@ public class SimpleJoin extends Iterator {
 	 * @throws IllegalStateException
 	 *             if no more tuples
 	 */
+	Tuple lastLeft=null;
 	public Tuple getNext() throws IllegalStateException {
 		// throw new UnsupportedOperationException("Not implemented");
 		Tuple temp = null, temp1 = null;
 		boolean breakLoop = false;
-		temp = iterLeft.getNext();
-
-		breakLoop = false;
-		while (!breakLoop) {
-			temp1 = iterRight.getNext();
-			Tuple res = Tuple.join(temp, temp1, currentSchema);
-			breakLoop = true;
-			for (int i = 0; i < given.length; i++) {
-				if (!given[i].evaluate(res)) {
-					breakLoop = false;
-					break;
-				}
-			}
+		if(!iterRight.hasNext())
+		{
+			iterRight.restart();
+			lastLeft=iterLeft.getNext();
 		}
-		iterRight.restart();
-		return Tuple.join(temp, temp1, currentSchema);
+		if(lastLeft==null&&hasNext())
+			lastLeft=iterLeft.getNext();
+		//temp = iterLeft.getNext();
+
+//		breakLoop = false;
+//		while (!breakLoop) {
+			temp1 = iterRight.getNext();
+//			Tuple res = Tuple.join(temp, temp1, currentSchema);
+//			breakLoop = true;
+//			for (int i = 0; i < given.length; i++) {
+//				if (!given[i].evaluate(res)) {
+//					breakLoop = false;
+//					break;
+//				}
+//			}
+//		}
+		//iterRight.restart();
+		return Tuple.join(lastLeft, temp1, currentSchema);
 
 	}
 } // public class SimpleJoin extends Iterator
