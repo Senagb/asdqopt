@@ -8,7 +8,6 @@ public class SimpleJoin extends Iterator {
 	Predicate[] given;
 	Iterator iterLeft, iterRight;
 	Schema currentSchema;
-	Tuple nextTuple;
 
 	/**
 	 * Constructs a join, given the left and right iterators and join predicates
@@ -22,8 +21,6 @@ public class SimpleJoin extends Iterator {
 		currentSchema = Schema
 				.join(iterLeft.getSchema(), iterRight.getSchema());
 		setSchema(currentSchema);
-		nextTuple = null;
-
 	}
 
 	/**
@@ -31,18 +28,7 @@ public class SimpleJoin extends Iterator {
 	 * child iterators, and increases the indent depth along the way.
 	 */
 	public void explain(int depth) {
-		// throw new UnsupportedOperationException("Not implemented");
-		indent(depth);
-		String explaination = "SimpleJoin with predicates: ";
-		for (int i = 0; i < given.length; i++) {
-			if (i == 0)
-				explaination += given[i].toString();
-			else
-				explaination += " OR " + given[i].toString();
-		}
-		System.out.println(explaination);
-		iterLeft.explain(depth + 1);
-		iterRight.explain(depth + 1);
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	/**
@@ -52,7 +38,6 @@ public class SimpleJoin extends Iterator {
 		// throw new UnsupportedOperationException("Not implemented");
 		iterLeft.restart();
 		iterRight.restart();
-		nextTuple = null;
 	}
 
 	/**
@@ -77,47 +62,43 @@ public class SimpleJoin extends Iterator {
 	 */
 	public boolean hasNext() {
 		// throw new UnsupportedOperationException("Not implemented");
-		if (!isOpen())
-			return false;
-		Tuple temp = null, temp1 = null;
-		while (true) {
-			if (temp == null) {
-				if (!iterLeft.hasNext()) {
-					nextTuple = null;
-					return false;
-				}
-
-				temp = iterLeft.getNext();
-			}
-
-			while (iterRight.hasNext()) {
-				temp1 = iterRight.getNext();
-				Tuple joinTuple = Tuple.join(temp, temp1, currentSchema);
-
-				boolean pass = false;
-
-				for (int i = 0; i < given.length; i++) {
-					if (given[i].evaluate(joinTuple)) {
-						pass = true;
-						break;
-					}
-				}
-
-				if (pass) {
-					nextTuple = joinTuple;
-					return true;
-				}
-			}
-
-			// Right depleted, restart
-			temp = null; // Signal the left to fetch new tuple
-			iterRight.restart();
-		}
-
+		return iterLeft.hasNext() || 
+				iterRight.hasNext();
 	}
 
+	/**
+	 * Gets the next tuple in the iteration.
+	 * 
+	 * @throws IllegalStateException
+	 *             if no more tuples
+	 */
+	Tuple lastLeft = null;
+
 	public Tuple getNext() throws IllegalStateException {
-		return nextTuple;
+		// throw new UnsupportedOperationException("Not implemented");
+		boolean breakLoop = false;
+		if (!iterRight.hasNext()) {
+			iterRight.restart();
+			lastLeft = iterLeft.getNext();
+		}
+		if (lastLeft == null && hasNext())
+			lastLeft = iterLeft.getNext();
+		// temp = iterLeft.getNext();
+		// breakLoop = false;
+		// while (!breakLoop) {
+		// Tuple res = Tuple.join(temp, temp1, currentSchema);
+		// breakLoop = true;
+		// for (int i = 0; i < given.length; i++) {
+		// if (!given[i].evaluate(res)) {
+		// breakLoop = false;
+		// break;
+		// }
+		// }
+		// }
+		// iterRight.restart();
+		if (!iterRight.hasNext())
+			return null;
+		return Tuple.join(lastLeft, iterRight.getNext(), currentSchema);
 
 	}
 } // public class SimpleJoin extends Iterator
